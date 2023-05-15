@@ -1,7 +1,15 @@
 # Wordpress application on AWS platform.
 
-<p>criar vpc
-<p>criar security groups
-<p>criar efs
-<p>criar banco rds
-<p>criar ami da instancia
+- criar vpc
+- criar security groups
+  - bastion - 22 - all
+  - efs - 2049 - sg-default
+  - db - 3306 - sg-default
+  - instancias privadas
+- criar efs
+- criar banco rds
+- criar ami da instancia
+- criar launch template
+- criar autoscaling group
+- criar load balancer
+
