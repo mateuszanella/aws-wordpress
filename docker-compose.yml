@@ -1,0 +1,29 @@
+version: '3'
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=<Link do servidor RDS>
+      - WORDPRESS_DB_USER=<Master User>
+      - WORDPRESS_DB_PASSWORD=<Senha do Master User>
+      - WORDPRESS_DB_NAME=<Nome da DataBase>
+    volumes:
+      - /efs/wp_data:/var/www/html
+  db:
+    image: mysql:8.0.27
+    volumes:
+      - /efs/db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=<Nome da DataBase>
+      - MYSQL_USER=<Master User>
+      - MYSQL_PASSWORD=<Senha do Master User>
+      - MYSQL_ROOT_PASSWORD=<Senha do Master User>
+      - MYSQL_HOST=<Link do servidor RDS>
+      - MYSQL_PORT=3306
+volumes:
+  wp_data:
+  db_data:
