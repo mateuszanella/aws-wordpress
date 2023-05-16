@@ -147,9 +147,16 @@ docker-compose up -d
   
 ## Conclusão
 
-<p>Com isso, o nosso sistema já deve estar plenamente funcional. 
-<p>Aguarde o Grupo de Auto Scaling criar as Instâncias e, para testar a funcionalidade de nossa arquitetura, podemos acessar o endereço DNS público do Load Balancer (http://>load-balancer-dns<). Se tudo foi feito corretamente, deveremos chegar na página de configuração inicial do WordPress.
+- Com isso, o nosso sistema já deve estar plenamente funcional. 
+- Aguarde o Grupo de Auto Scaling criar as Instâncias e, para testar a funcionalidade de nossa arquitetura, podemos acessar o endereço DNS público do Load Balancer (http://>load-balancer-dns<).
+- Se tudo foi feito corretamente, deveremos chegar na página de configuração inicial do WordPress.
 
-----
+---
 
+## Referências
 
+- Algumas referências utilizadas durante o desenvolvimento da tarefa:
+  - [Install LAMP on Amazon Linux 2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html)
+  - [How to Install WordPress on Docker (Windows, macOS, and Linux)](https://www.hostinger.com/tutorials/run-docker-wordpress)
+  - [Hospedar um blog do WordPress no Amazon Linux 2](https://docs.aws.amazon.com/pt_br/AWSEC2/latest/UserGuide/hosting-wordpress.html)
+  - [Attach backend instances with private IP addresses to my internet-facing Load Balancer](https://repost.aws/knowledge-center/public-load-balancer-private-ec2)
