@@ -21,6 +21,16 @@ Primeiramente, é necessária a criação de uma nova VPC com os seguintes atrib
 Após a configuração da VPC, será necessário criar os respectivos Security Groups que serão utilizados, que serão os seguintes:
 - Um grupo de segurança para o Bastion Host:
   - Liberar todo o tráfego (0.0.0.0/0) para a porta 22.
+- Um grupo de segurança para o Load Balancer:
+  - Liberar todo o tráfego (0.0.0.0/0) para a porta 80.
+- Um grupo de seguraça para o Banco RDS:
+  - Liberar a porta 3306 para o Grupo de Segurança Default.
+- Um grupo de segurança para as Instâncias privadas:
+  - Liberar o acesso à porta 22 para a Instância Bastion;
+  - Liberar a porta 2049 (acesso do Elastic File System) para o Grupo de Segurança Default;
+  - Liberar a porta 80 para o Grupo de Segurança do Load Balancer;
+  - Liberar a porta 3306 para o Grupo de Segurança do Banco RDS.
+> **Sobre liberar algumas portas para outros Grupos de Segurança:** isso é feito para garantir que a porta só será aberta para Instâncias que estejam atreladas à determinado Grupo de Segurança. É considerado uma boa prática, pois por mais que exista a possibilidade de utilizar o endereço de IP específico das máquinas EC2, também existe a chance do endereço mudar com a criação/destruição/reincialização de Instâncias.
 
 ----
 - criar security groups
