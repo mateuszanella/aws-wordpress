@@ -43,11 +43,11 @@ Após a configuração da VPC, será necessário criar os respectivos Security G
   - O RDS é configurado na VPC criada para a atividade, e recebe o seu respectivo Grupo de Segurança;
   - É recomendável definir um banco de dados inicial, para facilitar a configuração do Wordpress.
   
-## Configuração da Instância
+## Configuração da Instância e criação da AMI
   
 Existem diversos métodos de fazer a configuração de uma instância para uma atividade como esta, porém, nesse projeto, será feito via o uso de imagens.
   
-### Criação da Imagem para o Launch Template
+### Inicialização da Instância e do EFS
   
 - Primeiramente, cria-se uma instância base, que será o molde para a imagem que será utilizada para o Launch Template.
 - A instância pode ser iniciada com o seguinte user data, que instala os serviços de EFS da AWS, o serviço do Docker e o Docker Compose:
@@ -68,11 +68,63 @@ reboot
 - Com isso feito, todos esses serviços já devem estar montados.
 - Em seguida, podemos configurar a montagem do EFS no arquivo ```/etc/fstab```.
 - Podemos fazer isso por meio do seguinte comando:
-  ```sudo echo '[id-do-filesystem].efs.[regiao].amazonaws.com:/ /efs nfs4 defaults,_netdev 0 0' >> /etc/fstab```
+<p>```sudo echo '[id-do-filesystem].efs.[regiao].amazonaws.com:/ /efs nfs4 defaults,_netdev 0 0' >> /etc/fstab```
+- Em seguida, podemos criar um documento do docker-compose para criar um container com a aplicação Wordpress.
+
+### Criação do Container da aplicação Wordpress  
+
+- Cria-se uma pasta com um nome qualquer.
+- Dentro dessa pasta, será criado um arquivo ```docker-compose.yml```.
+- O arquivo deve conter as seguintes informações:
+```
+version: '3'
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=<Link do servidor RDS>
+      - WORDPRESS_DB_USER=<Master User>
+      - WORDPRESS_DB_PASSWORD=<Senha do Master User>
+      - WORDPRESS_DB_NAME=<Nome da DataBase>
+    volumes:
+      - /efs/wp_data:/var/www/html
+  db:
+    image: mysql:8.0.27
+    volumes:
+      - /efs/db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=<Nome da DataBase>
+      - MYSQL_USER=<Master User>
+      - MYSQL_PASSWORD=<Senha do Master User>
+      - MYSQL_ROOT_PASSWORD=<Senha do Master User>
+      - MYSQL_HOST=<Link do servidor RDS>
+      - MYSQL_PORT=3306
+volumes:
+  wp_data:
+  db_data:
+```
+- O arquivo docker-compose deve criar um container com o MySQL (já configurado com o Banco RDS criado anteriormente) e com o Wordpress.
+- Criado o arquivo, basta digitar o seguinte comando para baixar e executar os containers:
+```
+docker-compose up -d  
+```
+
+###  Criação da AMI
+
+- Feito isso, podemos partir para a criação da imagem.
+- Com o botão direito, clique na instância em questão, e vá para ```Image and templates``` > ```Create image```.
+  
+## Criação do Launch Template
+  
+- 
 ----
 
 
-- criar ami da instancia
+
 - criar launch template
 - criar autoscaling group
 - criar load balancer
