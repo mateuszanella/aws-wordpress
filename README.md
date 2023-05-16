@@ -32,14 +32,46 @@ Após a configuração da VPC, será necessário criar os respectivos Security G
   - Liberar a porta 3306 para o Grupo de Segurança do Banco RDS.
 > **Sobre liberar algumas portas para outros Grupos de Segurança:** isso é feito para garantir que a porta só será aberta para Instâncias que estejam atreladas à determinado Grupo de Segurança. É considerado uma boa prática, pois por mais que exista a possibilidade de utilizar o endereço de IP específico das máquinas EC2, também existe a chance do endereço mudar com a criação/destruição/reincialização de Instâncias.
 
+## Criação do EFS
+  
+- Para esta atividade, será utilizado um EFS para armazenar os estáticos do container do Wordpress.
+  
+## Criação do Banco RDS
+  
+- Após a criação do EFS, é criado também um banco RDS do tipo MySQL. Durante a sua criação, é necessária atenção à alguns pontos:
+  - A configuração do Master User e de sua senha é extremamente importante para a configuração do Wordpress;
+  - O RDS é configurado na VPC criada para a atividade, e recebe o seu respectivo Grupo de Segurança;
+  - É recomendável definir um banco de dados inicial, para facilitar a configuração do Wordpress.
+  
+## Configuração da Instância
+  
+Existem diversos métodos de fazer a configuração de uma instância para uma atividade como esta, porém, nesse projeto, será feito via o uso de imagens.
+  
+### Criação da Imagem para o Launch Template
+  
+- Primeiramente, cria-se uma instância base, que será o molde para a imagem que será utilizada para o Launch Template.
+- A instância pode ser iniciada com o seguinte user data, que instala os serviços de EFS da AWS, o serviço do Docker e o Docker Compose:
+
+```
+#!/bin/bash
+yum update -y
+yum install -y amazon-efs-utils
+yum -y install docker
+service docker start
+usermod -a -G docker ec2-user
+chkconfig docker on
+curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+reboot
+```
+
+- Com isso feito, todos esses serviços já devem estar montados.
+- Em seguida, podemos configurar a montagem do EFS no arquivo ```/etc/fstab```.
+- Podemos fazer isso por meio do seguinte comando:
+  ```sudo echo '[id-do-filesystem].efs.[regiao].amazonaws.com:/ /efs nfs4 defaults,_netdev 0 0' >> /etc/fstab```
 ----
-- criar security groups
-  - bastion - 22 - all
-  - efs - 2049 - sg-default
-  - db - 3306 - sg-default
-  - instancias privadas
-- criar efs
-- criar banco rds
+
+
 - criar ami da instancia
 - criar launch template
 - criar autoscaling group
