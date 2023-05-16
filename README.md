@@ -146,7 +146,12 @@ docker-compose up -d
 - As informações de Health Check podem ser alteradas caso desejado.
   
 ## Conclusão
-
+  
+- Feita a criação do Auto Scaling Group e do Load Balanancer, basta criar uma Instância Bastion para acessar as Instâncias privadas caso seja necessário:
+  - Crie uma instância na mesma VPC criada para esta atividade;
+  - Tenha certeza de marcar a Opção ```Alocate public IP adress```;
+  - Aplique o Grupo de Segurança criado para ela anteriormente;
+  - Para logar nas Instâncias privadas, faça o acesso SSH para o Bastion Host e, dentro dele, faça o acesso às Instâncias utilizando seu IP Privado.
 - Com isso, o nosso sistema já deve estar plenamente funcional. 
 - Aguarde o Grupo de Auto Scaling criar as Instâncias e, para testar a funcionalidade de nossa arquitetura, podemos acessar o endereço DNS público do Load Balancer (http://>load-balancer-dns<).
 - Se tudo foi feito corretamente, deveremos chegar na página de configuração inicial do WordPress.
