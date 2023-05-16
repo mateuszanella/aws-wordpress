@@ -30,7 +30,7 @@ Após a configuração da VPC, será necessário criar os respectivos Security G
   - Liberar a porta 2049 (acesso do Elastic File System) para o Grupo de Segurança Default;
   - Liberar a porta 80 para o Grupo de Segurança do Load Balancer;
   - Liberar a porta 3306 para o Grupo de Segurança do Banco RDS.
-> **Sobre liberar algumas portas para outros Grupos de Segurança:** isso é feito para garantir que a porta só será aberta para Instâncias que estejam atreladas à determinado Grupo de Segurança. É considerado uma boa prática, pois por mais que exista a possibilidade de utilizar o endereço de IP específico das máquinas EC2, também existe a chance do endereço mudar com a criação/destruição/reincialização de Instâncias.
+> **Sobre liberar algumas portas para outros Grupos de Segurança:** isso é feito para garantir que a porta só será aberta para Instâncias que estejam atreladas à determinado Grupo de Segurança. É considerado uma boa prática, pois por mais que exista a possibilidade de utilizar o endereço de IP específico das máquinas EC2, também existe a chance do endereço mudar com a criação/destruição/reincialização das Instâncias.
 
 ## Criação do EFS
   
@@ -120,12 +120,18 @@ docker-compose up -d
   
 ## Criação do Launch Template
   
-- 
+> Nesse caso, é possível selecionar a opção ```Auto Scaling guidance``` para ajudar na criação do Launch Template.
+  
+- Primeiramente, será selecionada a AMI feita anteriormente.
+- Em seguida, é feita a escolha da instância desejada, nesse caso, utilizaremos uma ```t2.micro``` para fins de demonstração.
+- Na aba de subnets, não inclua nenhuma neste Template, pois isso será definido na criação do Auto Scaling Group.
+- Selecione dois Grupos de Segurança: o criado especificamente para as Instâncias Privadas e o grupo Default (**IMPORTANTE**).
+> É de extrema importância lembrar de adicionar o grupo Default de segurança, pois mesmo que ele não possua nenhuma regra de entrada, é vital para o funcionamento das regras de outros Grupos de Segurança.
+- Com isso, está completa a criação do Launch Template.
+  
 ----
 
 
-
-- criar launch template
 - criar autoscaling group
 - criar load balancer
 
